@@ -164,6 +164,8 @@ def compute_metrics_for_fully_partial(gt_json, results_json, iou_threshold=0.5):
     metrics_part1_mask = {'precision': [], 'recall': [], 'iou': [], 'dice': []}
     metrics_part2_bbox = {'precision': [], 'recall': [], 'f1': []}
     metrics_part2_mask = {'precision': [], 'recall': [], 'iou': [], 'dice': []}
+    metrics_part3_bbox = {'precision': [], 'recall': [], 'f1': []}
+    metrics_part3_mask = {'precision': [], 'recall': [], 'iou': [], 'dice': []}
 
     # Loop over each image
     for img_id in img_ids:
@@ -242,6 +244,39 @@ def compute_metrics_for_fully_partial(gt_json, results_json, iou_threshold=0.5):
             metrics_part2_mask['iou'].append(iou)
             metrics_part2_mask['dice'].append(dice)
 
+        elif num_gt_boxes > 32:
+            # Calculate metrics for part 1
+            coco_eval = COCOeval(coco_gt, coco_dt, 'bbox')
+            coco_eval.params.iouThrs = np.array([iou_threshold])
+            coco_eval.params.imgIds = [img_id]
+            coco_eval.evaluate()
+            coco_eval.accumulate()
+            coco_eval.summarize()
+
+            precision = coco_eval.stats[0]  # precision at IoU threshold
+            recall = coco_eval.stats[8]     # recall at IoU threshold
+            f1 = 2 * (precision * recall) / (precision + recall)
+            metrics_part3_bbox['precision'].append(precision)
+            metrics_part3_bbox['recall'].append(recall)
+            metrics_part3_bbox['f1'].append(f1)
+
+            coco_eval = COCOeval(coco_gt, coco_dt, 'segm')
+            coco_eval.params.iouThrs = np.array([iou_threshold])
+            coco_eval.params.imgIds = [img_id]
+            # coco_eval.params.useCats = False
+            coco_eval.evaluate()
+            coco_eval.accumulate()
+            coco_eval.summarize()
+
+            precision = coco_eval.stats[0]  # precision at IoU threshold
+            recall = coco_eval.stats[8]     # recall at IoU threshold
+            iou = coco_eval.stats[0]
+            dice = 2 * precision * recall / (precision + recall)
+            metrics_part3_mask['precision'].append(precision)
+            metrics_part3_mask['recall'].append(recall)
+            metrics_part3_mask['iou'].append(iou)
+            metrics_part3_mask['dice'].append(dice)
+
     # Calculate average metrics for part 1
     avg_precision_part1_bbox = np.mean(metrics_part1_bbox['precision'])
     avg_recall_part1_bbox = np.mean(metrics_part1_bbox['recall'])
@@ -262,6 +297,16 @@ def compute_metrics_for_fully_partial(gt_json, results_json, iou_threshold=0.5):
     avg_iou_part2_mask = np.mean(metrics_part2_mask['iou'])
     avg_dice_part2_mask = np.mean(metrics_part2_mask['dice'])
 
+    # Calculate average metrics for part 3
+    avg_precision_part3_bbox = np.mean(metrics_part3_bbox['precision'])
+    avg_recall_part3_bbox = np.mean(metrics_part3_bbox['recall'])
+    avg_f1_part3_bbox = 2 * (avg_precision_part3_bbox * avg_recall_part3_bbox) / (avg_precision_part3_bbox + avg_recall_part3_bbox)
+
+    avg_precision_part3_mask = np.mean(metrics_part3_mask['precision'])
+    avg_recall_part3_mask = np.mean(metrics_part3_mask['recall'])
+    avg_iou_part3_mask = np.mean(metrics_part3_mask['iou'])
+    avg_dice_part3_mask = np.mean(metrics_part3_mask['dice'])
+
     # Print or return the results
     print("Metrics for images with < 32 ground truth boxes:")
     print(f"BBox Precision: {avg_precision_part1_bbox:.4f}")
@@ -279,17 +324,26 @@ def compute_metrics_for_fully_partial(gt_json, results_json, iou_threshold=0.5):
     print(f"Mask Dice Similarity: {avg_dice_part2_mask:.4f}")
     print()
 
+    print("Metrics for images with > 32 ground truth boxes:")
+    print(f"BBox Precision: {avg_precision_part3_bbox:.4f}")
+    print(f"BBox Recall: {avg_recall_part3_bbox:.4f}")
+    print(f"BBox F1 Score: {avg_f1_part3_bbox:.4f}")
+    print(f"Mask IoU: {avg_iou_part3_mask:.4f}")
+    print(f"Mask Dice Similarity: {avg_dice_part3_mask:.4f}")
+    print()
+
 if __name__ == '__main__':
-    gt_json = 'GuidedDistillation-main-bak-0613/datasets/tooth-x-ray-instance-segmentation-1.6k/tooth_IS_test.json'
+    gt_json = 'tooth-x-ray-instance-segmentation-1.6k/tooth_IS_test.json'
     results_json = 'coco_instances_results.json'
+
     # print("Compute Metrics:")
     # compute_metrics(gt_json, results_json)
     # print()
-
-    # print("Compute Metrics For Partial Images:")
-    # compute_metrics_for_fully_partial(gt_json, results_json)
-    # print()
-
-    print("Compute Metrics For Each Class:")
-    compute_metrics_for_each_class(gt_json, results_json)
+    
+    print("Compute Metrics For Partial Images:")
+    compute_metrics_for_fully_partial(gt_json, results_json)
     print()
+
+    # print("Compute Metrics For Each Class:")
+    # compute_metrics_for_each_class(gt_json, results_json)
+    # print()
