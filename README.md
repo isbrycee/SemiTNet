@@ -1,5 +1,6 @@
 # Guided Distillation for Semi-Supervised Instance Segmentation
-<!-- # Mask2Former: Masked-attention Mask Transformer for Universal Image Segmentation (CVPR 2022) -->
+
+Pre-trained model path: https://huggingface.co/Bryceee/SemiTNet/tree/main
 
 Tariq Berrada, Camille Couprie, Karteek Alahari, Jakob Verbeek.
 
