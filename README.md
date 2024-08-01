@@ -1,10 +1,7 @@
-# Guided Distillation for Semi-Supervised Instance Segmentation
+# A novel semi-supervised transformer-based framework for tooth segmentation and identification on panoramic radiography
 
 Pre-trained model path: https://huggingface.co/Bryceee/SemiTNet/tree/main
 
-Tariq Berrada, Camille Couprie, Karteek Alahari, Jakob Verbeek.
-
-[[`WACV website`](https://openaccess.thecvf.com/content/WACV2024/html/Berrada_Guided_Distillation_for_Semi-Supervised_Instance_Segmentation_WACV_2024_paper.html)][[`arXiv`](https://arxiv.org/abs/2308.02668)] [[`BibTeX`](#citing)]
 
 <div align="center">
   <img src="illustrations/coco_illustration.png" width="100%" height="100%"/>
