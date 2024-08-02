@@ -4,37 +4,129 @@ Pre-trained model path: https://huggingface.co/Bryceee/SemiTNet/tree/main
 
 
 <div align="center">
-  <img src="illustrations/coco_illustration.png" width="100%" height="100%"/>
+  <img src="images/framework.pdf" width="100%" height="100%"/>
 </div><br/>
 
-[Guided Distillation](https://github.com/facebookresearch/GuidedDistillation) is a semi-supervised training methodology for instance segmentation building on the [Mask2Former](https://github.com/facebookresearch/Mask2Former/tree/main) model.
-It achieves substantial improvements with respect to the previous state-of-the-art in terms of mask-AP.
-Most notably, our method outperforms the fully supervised Mask-RCNN COCO baseline while using only 2\% of the annotations.
-Using a ViT (DinoV2) backbone, our method achieves 31.0 mask-AP while using 0.4\% of annotations only.
 
-Our implementation is based on [detectron2](https://github.com/facebookresearch/detectron2) and provides support for both COCO and Cityscapes with multiple backbones such as R50, Swin, ViT (DETR) and ViT (DinoV2).
+
+Our implementation is based on [detectron2](https://github.com/facebookresearch/detectron2) and provides support for [GEM](https://github.com/isbrycee/GEM). 
 
 ## Features
-* Semi-supervised distillation training for instance segmentation with different percentages of labeled data.
-* Tested on both COCO and Cityscapes.
-* Support for R50, Swin, ViT (DETR) and ViT (DinoV2) backbones.
+* Semi-supervised distillation training for tooth instance segmentation on panoramic X-ray images
+* All the pre-trained models are released. 
+* A large-scale dataset TSI15k is released. 
 
 ## Installation
 
-Our codebase is based on detectron2 and Mask2Former.
+Our codebase is based on detectron2 and GEM.
 An example of environment installing useful dependencies is provided in [install.md](install.md).
 
-Labelled data path: change data/datasets/builtin.py line 58
+## Prepare Datasets for SemiTNet
 
-Labelled data path: change data/datasets/builtin.py line 48
+If you want to train SemiTNet in a semi-supervised manner, you should change:
+*  Labelled data path: data/datasets/builtin.py line 58
+*  Labelled data path: data/datasets/builtin.py line 48 (same as the last line)
+*  Unlabelled data path: data/datasets/coco_images.py line 91
+*  List of classes: python/lib/python3.7/site-packages/detectron2/data/datasets/builtin_meta.py line20 (COCO_CATEGORIES)
 
-Unlabelled data path: change data/datasets/coco_images.py line 91
+You can change the COCO_CATEGORIES for TSI15k dataset into :
 
-Teacher checkpoint path: change train_net.py line 351
+```
+COCO_CATEGORIES = [
+    {"color": [220, 20, 60], "isthing": 1, "id": 1, "name": "1"},
+   {"color": [119, 11, 32], "isthing": 1, "id": 2, "name": "2"},
+   {"color": [0, 0, 142], "isthing": 1, "id": 3, "name": "4"},
+   {"color": [0, 0, 230], "isthing": 1, "id": 4, "name": "5"},
+   {"color": [106, 0, 228], "isthing": 1, "id": 5, "name": "6"},
+   {"color": [0, 60, 100], "isthing": 1, "id": 6, "name": "7"},
+   {"color": [0, 80, 100], "isthing": 1, "id": 7, "name": "8"},
+   {"color": [0, 0, 70], "isthing": 1, "id": 8, "name": "9"},
+   {"color": [0, 0, 192], "isthing": 1, "id": 9, "name": "10"},
+   {"color": [250, 170, 30], "isthing": 1, "id": 10, "name": "11"},
+   {"color": [100, 170, 30], "isthing": 1, "id": 11, "name": "12"},
+   {"color": [100, 170, 30], "isthing": 1, "id": 12, "name": "13"},
+   {"color": [220, 220, 0], "isthing": 1, "id": 13, "name": "15"},
+   {"color": [175, 116, 175], "isthing": 1, "id": 14, "name": "16"},
+   {"color": [250, 0, 30], "isthing": 1, "id": 15, "name": "17"},
+   {"color": [165, 42, 42], "isthing": 1, "id": 16, "name": "19"},
+   {"color": [255, 77, 255], "isthing": 1, "id": 17, "name": "20"},
+   {"color": [0, 226, 252], "isthing": 1, "id": 18, "name": "21"},
+   {"color": [182, 182, 255], "isthing": 1, "id": 19, "name": "22"},
+   {"color": [0, 82, 0], "isthing": 1, "id": 20, "name": "23"},
+   {"color": [120, 166, 157], "isthing": 1, "id": 21, "name": "24"},
+   {"color": [110, 76, 0], "isthing": 1, "id": 22, "name": "25"},
+   {"color": [174, 57, 255], "isthing": 1, "id": 23, "name": "26"},
+   {"color": [199, 100, 0], "isthing": 1, "id": 24, "name": "27"},
+   {"color": [72, 0, 118], "isthing": 1, "id": 25, "name": "28"},
+   {"color": [72, 0, 118], "isthing": 1, "id": 26, "name": "30"},
+   {"color": [255, 179, 240], "isthing": 1, "id": 27, "name": "32"},
+   {"color": [0, 125, 92], "isthing": 1, "id": 28, "name": "18"},
+   {"color": [209, 0, 151], "isthing": 1, "id": 29, "name": "29"},
+   {"color": [188, 208, 182], "isthing": 1, "id": 30, "name": "3"},
+   {"color": [0, 220, 176], "isthing": 1, "id": 31, "name": "14"},
+   {"color": [255, 99, 164], "isthing": 1, "id": 32, "name": "31"},
+]
+```
 
-## Prepare Datasets for Mask2Former
+You can change the COCO_CATEGORIES for MACCAI2024 dataset into :
 
-For experiments with different amounts of labeled data, you will need to generate annotation structures for each of the percentages you want to use in your experiments, please follow the instructions at `tools/datasets` for this.
+```
+COCO_CATEGORIES = [
+    {"color": [220, 20, 60], "isthing": 1, "id": 1, "name": "55"},
+    {"color": [119, 11, 32], "isthing": 1, "id": 2, "name": "54"},
+    {"color": [0, 0, 142], "isthing": 1, "id": 3, "name": "53"},
+    {"color": [0, 0, 230], "isthing": 1, "id": 4, "name": "52"},
+    {"color": [106, 0, 228], "isthing": 1, "id": 5, "name": "61"},
+    {"color": [0, 60, 100], "isthing": 1, "id": 6, "name": "62"},
+    {"color": [0, 80, 100], "isthing": 1, "id": 7, "name": "63"},
+    {"color": [0, 0, 70], "isthing": 1, "id": 8, "name": "64"},
+    {"color": [0, 0, 192], "isthing": 1, "id": 9, "name": "65"},
+    {"color": [250, 170, 30], "isthing": 1, "id": 10, "name": "75"},
+    {"color": [230, 150, 140], "isthing": 1, "id": 11, "name": "74"},
+    {"color": [128, 64, 128], "isthing": 1, "id": 12, "name": "73"},
+    {"color": [244, 35, 232], "isthing": 1, "id": 13, "name": "72"},
+    {"color": [70, 70, 70], "isthing": 1, "id": 14, "name": "81"},
+    {"color": [102, 102, 156], "isthing": 1, "id": 15, "name": "82"},
+    {"color": [190, 153, 153], "isthing": 1, "id": 16, "name": "83"},
+    {"color": [180, 165, 180], "isthing": 1, "id": 17, "name": "84"},
+    {"color": [150, 100, 100], "isthing": 1, "id": 18, "name": "85"},
+    {"color": [107, 142, 35], "isthing": 1, "id": 19, "name": "11"},
+    {"color": [152, 251, 152], "isthing": 1, "id": 20, "name": "12"},
+    {"color": [70, 130, 180], "isthing": 1, "id": 21, "name": "13"},
+    {"color": [220, 20, 60], "isthing": 1, "id": 22, "name": "14"},
+    {"color": [230, 190, 255], "isthing": 1, "id": 23, "name": "15"},
+    {"color": [255, 0, 0], "isthing": 1, "id": 24, "name": "16"},
+    {"color": [0, 0, 142], "isthing": 1, "id": 25, "name": "17"},
+    {"color": [255, 204, 54], "isthing": 1, "id": 26, "name": "48"},
+    {"color": [0, 153, 153], "isthing": 1, "id": 27, "name": "46"},
+    {"color": [220, 220, 0], "isthing": 1, "id": 28, "name": "45"},
+    {"color": [107, 142, 35], "isthing": 1, "id": 29, "name": "44"},
+    {"color": [152, 251, 152], "isthing": 1, "id": 30, "name": "43"},
+    {"color": [70, 130, 180], "isthing": 1, "id": 31, "name": "42"},
+    {"color": [220, 20, 60], "isthing": 1, "id": 32, "name": "41"},
+    {"color": [230, 190, 255], "isthing": 1, "id": 33, "name": "31"},
+    {"color": [255, 0, 0], "isthing": 1, "id": 34, "name": "32"},
+    {"color": [0, 0, 142], "isthing": 1, "id": 35, "name": "33"},
+    {"color": [255, 204, 54], "isthing": 1, "id": 36, "name": "34"},
+    {"color": [0, 153, 153], "isthing": 1, "id": 37, "name": "35"},
+    {"color": [220, 220, 0], "isthing": 1, "id": 38, "name": "36"},
+    {"color": [119, 11, 32], "isthing": 1, "id": 39, "name": "37"},
+    {"color": [0, 0, 142], "isthing": 1, "id": 40, "name": "38"},
+    {"color": [0, 0, 142], "isthing": 1, "id": 41, "name": "21"},
+    {"color": [119, 11, 32], "isthing": 1, "id": 42, "name": "22"},
+    {"color": [0, 0, 142], "isthing": 1, "id": 43, "name": "23"},
+    {"color": [0, 0, 142], "isthing": 1, "id": 44, "name": "24"},
+    {"color": [0, 0, 142], "isthing": 1, "id": 45, "name": "25"},
+    {"color": [0, 0, 142], "isthing": 1, "id": 46, "name": "26"},
+    {"color": [0, 0, 142], "isthing": 1, "id": 47, "name": "27"},
+    {"color": [0, 0, 142], "isthing": 1, "id": 48, "name": "28"},
+    {"color": [0, 0, 142], "isthing": 1, "id": 49, "name": "47"},
+    {"color": [0, 0, 142], "isthing": 1, "id": 50, "name": "18"},
+    {"color": [0, 0, 142], "isthing": 1, "id": 51, "name": "51"},
+    {"color": [0, 0, 142], "isthing": 1, "id": 52, "name": "71"}
+]
+```
+
 
 ## Model Training 
 
@@ -45,59 +137,55 @@ Training is split into two consecutive steps.
 
 The following section provides examples of scripts to launch for different use cases.
 
-### Example on Cityscapes with a R50 backbone
-
-Example with R50 for cityscapes with 5\% of labeled data on 2 GPUs.
+### Example
 
 * Train teacher model with available labeled data only :
     ```
-    python3 train_net.py --config-file ./configs/cityscapes/instance-segmentation/maskformer2_R50_bs16_90k.yaml --num-gpus 2 --num-machines 1 SSL.PERCENTAGE 5 SSL.TRAIN_SSL False OUTPUT_DIR *OUTPUT/DIR/TEACHER*
+    sh run_train_1st.sh
     ```
 
 * Train semi-supervised model using pretrained checkpoint
     ```
-    python3 train_net.py --config-file ./configs/cityscapes/instance-segmentation/maskformer2_R50_bs16_90k.yaml --num-gpus 2 --num-machines 1 SSL.PERCENTAGE 5 SSL.TRAIN_SSL True SSL.TEACHER_CKPT *PATH/TO/CKPT* OUTPUT_DIR *OUTPUT/DIR/STUDENT* SSL.BURNIN_ITER *NB_ITER*
-    ```
-
-For Swin backbones, pretrained weights are expected to be downloaded and converted according to Mask2Former's [scripts]([Title](https://github.com/facebookresearch/MaskFormer/tree/main/tools)).
-
-### Example on COCO with a DINO backbone
-
-Example with DINOv2 backbones, 0.4\% of labeled data (for percentage below 1\%, the argument takes 100/percentage=250 in this case): 
-
-* Train teacher model with available labeled data only :
-    ```
-    python3 -W ignore train_net.py --config-file ./configs/coco/instance-segmentation/dinov2/maskformer2_dinov2_large_bs16_50ep.yaml --num-gpus 2 --num-machines 1 SSL.PERCENTAGE 250 SSL.TRAIN_SSL False OUTPUT_DIR *OUTPUT/DIR/TEACHER*
-    ```
-
-* Train semi-supervised model using pretrained checkpoint
-    ```
-    python3 -W ignore train_net.py --config-file ./configs/coco/instance-segmentation/dinov2/maskformer2_dinov2_large_bs16_50ep.yaml --num-gpus 2 --num-machines 1 SSL.PERCENTAGE 250 SSL.TRAIN_SSL True SSL.TEACHER_CKPT *PATH/TO/CKPT* OUTPUT_DIR *OUTPUT/DIR/STUDENT* SSL.BURNIN_ITER *NB_ITER*
+    sh run_train_2nd.sh
     ```
 
 You can choose to evaluate either the teacher, the student or both models during semi-supervised training. 
 To this end you can add the `SSL.EVAL_WHO` argument to your script and set it to either `STUDENT` (default), `TEACHER` or `BOTH`.
 
+## Model Validation
+
+After training the first step, you can evaluate the performance of teacher model:
+    ```
+    sh run_eval_teacher.sh
+    ```
+After training the second step, you can evaluate the performance of student model:
+    ```
+    sh run_eval_student.sh
+    ```
+
+## Model Inference
+
+If you only have images and want to get the masks using our pre-trained model, you can follow steps below:
+
+1. Generate a .json for your images by 'python gen_json_for_inference.py'
+2. Select the model you want to use, and start inference by 'sh run_eval_teacher.sh' or 'sh run_eval_student.sh'
+3. After step2, we will get the file 'coco_instances_results.json' in the folder 'output/inference', we can get the visualization by 'python ./tools/visual_for_infer_output_json.py'
+
+
 ## <a name="citing"></a>Citing Guided Distillation
 
-If you use Guided Distillation in your research or wish to refer to the baseline results published in the manuscript, please use the following BibTeX entry.
+If you use SemiTNet in your research or wish to refer to the baseline results published in the manuscript, please use the following BibTeX entry.
 
 ```BibTeX
-@InProceedings{Berrada_2024_WACV,
-    author    = {Berrada, Tariq and Couprie, Camille and Alahari, Karteek and Verbeek, Jakob},
-    title     = {Guided Distillation for Semi-Supervised Instance Segmentation},
-    booktitle = {Proceedings of the IEEE/CVF Winter Conference on Applications of Computer Vision (WACV)},
-    month     = {January},
-    year      = {2024},
-    pages     = {475-483}
+@article{hao2023gem,
+  title={GEM: Boost Simple Network for Glass Surface Segmentation via Vision Foundation Models},
+  author={Hao, Jing and Liu, Moyun and Yang, Jinrong and Hung, Kuo Feng},
+  journal={arXiv e-prints},
+  pages={arXiv--2307},
+  year={2023}
 }
 ```
 
 ## Acknowledgement
 
-Code is largely based on [MaskFormer](https://github.com/facebookresearch/MaskFormer) and [Detectron2](https://github.com/facebookresearch/detectron2).
-
-See the [CONTRIBUTING](CONTRIBUTING.md) file for how to help out.
-
-## License
-"*Guided Distillation for Semi-Supervised Instance Segmentation*" is <YOUR LICENSE HERE> licensed, as found in the LICENSE file.
+Code is largely based on [GuidedDistillation](https://github.com/facebookresearch/GuidedDistillation) and [GEM](https://github.com/isbrycee/GEM).
