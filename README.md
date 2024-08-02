@@ -157,6 +157,7 @@ After training the first step, you can evaluate the performance of teacher model
     ```
     sh run_eval_teacher.sh
     ```
+
 After training the second step, you can evaluate the performance of student model:
     ```
     sh run_eval_student.sh
@@ -166,7 +167,7 @@ After training the second step, you can evaluate the performance of student mode
 
 If you only have images and want to get the masks using our pre-trained model, you can follow steps below:
 
-1. Generate a .json for your images by 'python gen_json_for_inference.py'
+1. Generate a .json for your images by '''python gen_json_for_inference.py'''
 2. Select the model you want to use, and start inference by 'sh run_eval_teacher.sh' or 'sh run_eval_student.sh'
 3. After step2, we will get the file 'coco_instances_results.json' in the folder 'output/inference', we can get the visualization by 'python ./tools/visual_for_infer_output_json.py'
 
