@@ -25,6 +25,7 @@ If you want to train SemiTNet in a semi-supervised manner, you should change:
 *  Labelled data path: data/datasets/builtin.py line 58
 *  Labelled data path: data/datasets/builtin.py line 48 (same as the last line)
 *  Unlabelled data path: data/datasets/coco_images.py line 91
+*  data Augmentation: directly install the detectron2 using the folder 'detectron2-main' in this repo
 *  List of classes: python/lib/python3.7/site-packages/detectron2/data/datasets/builtin_meta.py line20 (COCO_CATEGORIES)
 
 You can change the COCO_CATEGORIES for TSI15k dataset into :
