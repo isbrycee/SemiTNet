@@ -1,10 +1,8 @@
 # A novel semi-supervised transformer-based framework for tooth segmentation and identification on panoramic radiography
 
-Pre-trained model path: https://huggingface.co/Bryceee/SemiTNet/tree/main
-
 
 <div align="center">
-  <img src="images/framework.pdf" width="100%" height="100%"/>
+  <img src="images/framework.png" width="100%" height="100%"/>
 </div><br/>
 
 
@@ -12,9 +10,9 @@ Pre-trained model path: https://huggingface.co/Bryceee/SemiTNet/tree/main
 Our implementation is based on [detectron2](https://github.com/facebookresearch/detectron2) and provides support for [GEM](https://github.com/isbrycee/GEM). 
 
 ## Features
-* Semi-supervised distillation training for tooth instance segmentation on panoramic X-ray images
-* All the pre-trained models are released. 
-* A large-scale dataset TSI15k is released. 
+* Semi-supervised distillation training for tooth instance segmentation on 2D  X-ray images
+* All the pre-trained models are released. See: https://huggingface.co/Bryceee/SemiTNet/tree/main
+* A large-scale dataset TSI15k is released. See: https://huggingface.co/datasets/Bryceee/TISI15k-Dataset
 
 ## Installation
 
