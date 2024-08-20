@@ -47,6 +47,8 @@ _PREDEFINED_SPLITS_COCO["coco"] = {
     ),
     "coco_2017_train": ("MICCAI2024_SemiTeeth/Train-Labeled/Images", "MICCAI2024_SemiTeeth/Train-Labeled/train.json"),
     "coco_2017_val": ("MICCAI2024_SemiTeeth/Train-Labeled/Images", "MICCAI2024_SemiTeeth/Train-Labeled/train.json"),
+    # "coco_2017_val": ("MICCAI2024_SemiTeeth/Validation-Public", "MICCAI2024_SemiTeeth/validation.json"),
+    # "coco_2017_val": ("MICCAI2024_SemiTeeth/Train-Unlabeled", "MICCAI2024_SemiTeeth/train_unlabeled_pseudo_mask.json"),
     "coco_2017_test": ("coco/test2017", "coco/annotations/image_info_test2017.json"),
     "coco_2017_test-dev": ("coco/test2017", "coco/annotations/image_info_test-dev2017.json"),
     "coco_2017_val_100": ("coco/val2017", "coco/annotations/instances_val2017_100.json"),
