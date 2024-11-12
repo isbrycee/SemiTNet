@@ -1,4 +1,4 @@
-# A novel semi-supervised transformer-based framework for tooth segmentation and identification on panoramic radiography
+# SemiT-SAM: Building a Visual Foundation Model for Tooth Instance Segmentation on Panoramic Radiographs
 
 
 <div align="center">
