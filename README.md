@@ -19,7 +19,7 @@ Our implementation is based on [detectron2](https://github.com/facebookresearch/
 Our codebase is based on detectron2 and GEM.
 An example of environment installing useful dependencies is provided in [install.md](install.md).
 
-## Prepare Datasets for SemiTNet
+## Prepare Datasets for SemiT-SAM
 
 If you want to train SemiTNet in a semi-supervised manner, you should change:
 *  Labelled data path: data/datasets/builtin.py line 58
